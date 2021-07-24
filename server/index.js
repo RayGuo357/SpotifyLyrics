@@ -133,13 +133,13 @@ app.get('/callback', function (req, res) {
         });
 
         // we can also pass the token to the browser to make requests from there
-        res.redirect('/currently-playing/#' +
+        res.redirect('/#/currently-playing/#' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
           }));
       } else {
-        res.redirect('/currently-playing/#' +
+        res.redirect('/#/currently-playing/#' +
           querystring.stringify({
             error: 'invalid_token'
           }));
@@ -161,7 +161,9 @@ app.get('/update', function(req, res) {
   };
 
   request.get(currentlyPlaying, function(error, response, body) {
+    console.log("Requesting")
       if (!error && response.statusCode === 200) {
+        console.log("inside")
               var title = body.item.name;
               artists = artistCompiler(body.item.artists),
               album_cover = body.item.album.images[0].url,

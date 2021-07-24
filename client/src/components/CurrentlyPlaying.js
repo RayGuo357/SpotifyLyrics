@@ -15,7 +15,7 @@ const CurrentlyPlaying = () => {
     function updateInfo() {
         // var test = getHashParams().access_token
         // console.log(test)
-        var url = new URL("http://" + window.location.hostname + "/update"),
+        var url = new URL(window.location.protocol + window.location.hostname + "/update"),
             params = { access_token: access_token }
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         fetch(url)
@@ -31,7 +31,10 @@ const CurrentlyPlaying = () => {
     function getHashParams() {
         var hashParams = {};
         var e, r = /([^&;=]+)=?([^&;]*)/g,
-            q = window.location.hash.substring(1);
+            q = window.location.hash.substring(21);
+        console.log("e: " + e)
+        console.log("r: " + r)
+        console.log("q: " + q)
         while (e = r.exec(q)) {
             hashParams[e[1]] = decodeURIComponent(e[2]);
         }
