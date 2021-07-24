@@ -15,7 +15,7 @@ const CurrentlyPlaying = () => {
     function updateInfo() {
         // var test = getHashParams().access_token
         // console.log(test)
-        var url = new URL("/update"),
+        var url = new URL("http://" + window.location.hostname + "/update"),
             params = { access_token: access_token }
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         fetch(url)
