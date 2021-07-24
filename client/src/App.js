@@ -1,5 +1,5 @@
 import React from "react"
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, HashRouter } from 'react-router-dom';
 import Login from './components/Login';
 import CurrentlyPlaying from "./components/CurrentlyPlaying";
 import logo from './logo.svg';
@@ -15,7 +15,7 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <HashRouter>
       <Route path='/' exact render={Login} />
       <Route path='/currently-playing/*' render={(props) => (
         <>
@@ -28,7 +28,7 @@ function App() {
           </div>
         </>
       )} />
-    </Router>
+    </HashRouter>
   );
 }
 
