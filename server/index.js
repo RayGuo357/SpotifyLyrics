@@ -1,5 +1,6 @@
 const path = require('path');
-const express = require("express");
+const express = require('express');
+const request = require('request');
 const cors = require('cors');
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
@@ -7,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8080;
 
 var client_id = process.env.SPOTIFY_ID;
 var client_secret = process.env.SPOTIFY_SECRET;
@@ -27,20 +28,28 @@ var stateKey = 'spotify_auth_state';
 
 const app = express();
 
-app.use(express.static(path.resolve(__dirname, '../client/build')))
-   .use(cors())
-   .use(cookieParser());
+app.use(express.static(path.resolve(__dirname, '../client/build'))).use(cookieParser());
+app.use(cors());
+app.use(cookieParser());
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
+
 
 app.get("/login", (req, res) => {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email ' +
+  var scope = 'user-read-private ' + 
+      'user-read-email ' +
       'playlist-read-private ' +
       'user-read-currently-playing ' +
       'user-read-playback-state ' +
@@ -58,7 +67,13 @@ app.get("/login", (req, res) => {
     }));
 });
 
+app.get("/test", (req, res) => {
+  console.log("test api")
+  res.json({ message: "Test" });
+});
+
 app.get('/callback', function(req, res) {
+  console.log("Got into callback")
 
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -121,7 +136,7 @@ app.get('/callback', function(req, res) {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, '../client/build'));
 });
 
 app.listen(PORT, () => {

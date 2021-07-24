@@ -1,5 +1,6 @@
 import React from "react"
 import Login from './components/Login'
+import ControlBar from "./components/ControlBar";
 import logo from './logo.svg';
 import './App.css';
 
@@ -14,10 +15,11 @@ function App() {
 
   return (
     <div className="App">
-      <Login />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>{!data ? "Loading..." : data}</p>
+        <Login />
+        <ControlBar />
       </header>
     </div>
   );
