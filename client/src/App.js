@@ -1,6 +1,7 @@
 import React from "react"
-import Login from './components/Login'
-import ControlBar from "./components/ControlBar";
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Login from './components/Login';
+import CurrentlyPlaying from "./components/CurrentlyPlaying";
 import logo from './logo.svg';
 import './App.css';
 
@@ -14,14 +15,20 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{!data ? "Loading..." : data}</p>
-        <Login />
-        <ControlBar />
-      </header>
-    </div>
+    <Router>
+      <Route path='/' exact render={Login} />
+      <Route path='/currently-playing/*' render={(props) => (
+        <>
+          <div className="App">
+            <header className="App-header">
+              <img src={logo} className="App-logo" alt="logo" />
+              <p>{!data ? "Loading..." : data}</p>
+              <CurrentlyPlaying />
+            </header>
+          </div>
+        </>
+      )} />
+    </Router>
   );
 }
 
