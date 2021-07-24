@@ -12,7 +12,7 @@ function test() {
 
 const Login = () => {
     return (
-        <a href={"http://" + window.location.hostname + ":3001/login"}>
+        <a href={"https://" + window.location.hostname + "/login"}>
             Login
         </a>
     )
