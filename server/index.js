@@ -161,15 +161,16 @@ app.get('/update', function(req, res) {
   };
 
   request.get(currentlyPlaying, function(error, response, body) {
-    console.log("Requesting")
+    // console.log("Requesting")
       if (!error && response.statusCode === 200) {
-        console.log("inside")
+        // console.log("inside")
+        // console.log(body)
               var title = body.item.name;
               artists = artistCompiler(body.item.artists),
               album_cover = body.item.album.images[0].url,
-              // duration = millisToMinutesAndSeconds(body.item.duration_ms),
+              duration = body.item.duration_ms,
               href = body.item.href,
-              // progress_seek = millisToMinutesAndSeconds(body.progress_ms),
+              progress = body.progress_ms,
               is_playing = body.is_playing;
               // multiple_artists = body.item.artists.length > 1,
               // main_artist = body.item.artists[0].name;
@@ -182,15 +183,43 @@ app.get('/update', function(req, res) {
               title: title,
               artists: artists,
               // album_cover: album_cover,
-              // 'duration_seek': duration,
-              // song_href: href,
-              // 'progress_seek': progress_seek,
+              duration: duration,
+              song_href: href,
+              progress: progress,
               // 'seek_value': seek_value,
-              // is_playing: is_playing,
+              is_playing: is_playing,
               // 'multiple_artists': multiple_artists,
               // 'main_artist': main_artist
           });
       } else {
+        console.log(error)
+        console.log(response.statusCode)
+      }
+  });
+});
+
+app.get('/refresh_token', function(req, res) {
+  console.log("refreshing token")
+  // requesting access token from refresh token
+  var refresh_token = req.query.refresh_token;
+  var authOptions = {
+      url: 'https://accounts.spotify.com/api/token',
+      headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+      form: {
+          grant_type: 'refresh_token',
+          refresh_token: refresh_token
+      },
+      json: true
+  };
+
+  request.post(authOptions, function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+          var access_token = body.access_token;
+          res.send({
+              'access_token': access_token
+          });
+      } else {
+        console.log('request failed')
         console.log(error)
         console.log(response.statusCode)
       }

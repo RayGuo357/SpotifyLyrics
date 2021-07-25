@@ -4,42 +4,22 @@ import Button from './Button';
 import ControlBar from "./ControlBar";
 
 const CurrentlyPlaying = () => {
-    const [accessToken, setAccessToken] = useState([]);
+    const [tokens, setTokens] = useState(
+        {
+            accessToken: "",
+            refreshToken: ""
+        }
+    );
     const [currentSong, setCurrentSong] = useState(
         {
             title: "",
-            artists: ""
+            artists: "",
+            song_href: "",
+            is_playing: false,
+            duration: 0,
+            progress: 0
         }
     )
-
-    function updateInfo() {
-        // var test = getHashParams().access_token
-        // console.log(test)
-        var url = new URL(window.location.protocol + window.location.hostname + "/update"),
-            params = { access_token: access_token }
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-        fetch(url)
-            .then((res) => res.json())
-            .then((data) => setCurrentSong({
-                title: data.title,
-                artists: data.artists
-            })).then(console.log(currentSong))
-
-        // console.log(currentSong)
-    }
-
-    function getHashParams() {
-        var hashParams = {};
-        var e, r = /([^&;=]+)=?([^&;]*)/g,
-            q = window.location.hash.substring(21);
-        console.log("e: " + e)
-        console.log("r: " + r)
-        console.log("q: " + q)
-        while (e = r.exec(q)) {
-            hashParams[e[1]] = decodeURIComponent(e[2]);
-        }
-        return hashParams;
-    }
 
     var params = getHashParams();
 
@@ -47,14 +27,73 @@ const CurrentlyPlaying = () => {
         refresh_token = params.refresh_token,
         error = params.error;
 
+    function updateInfo() {
+        // var test = getHashParams().access_token
+        // console.log(test)
+        updateTokens()
+        var url = new URL(window.location.protocol + window.location.hostname + "/update"),
+            params = { access_token: access_token }
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+        fetch(url)
+            .then((res) => res.json())
+            .then((data) => setCurrentSong({
+                title: data.title,
+                artists: data.artists,
+                song_href: data.song_href,
+                is_playing: data.is_playing,
+                duration: data.duration,
+                progress: data.progress
+            })).then(console.log(currentSong))
+
+        // console.log(currentSong)
+    }
+
+    function updateTokens() {
+        console.log("updating tokens")
+        var url = new URL(window.location.protocol + window.location.hostname + "/refresh_token"),
+            params = { refresh_token: refresh_token }
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+        fetch(url)
+            .then((res) => res.json())
+            .then((data) => access_token = data.access_token)
+            .then(() => {
+                var newURL = window.location.protocol + "//" + window.location.hostname + "/#/currently-playing/#access_token=" + access_token + "&refresh_token=" + refresh_token
+                window.history.pushState({ path: newURL }, '', newURL)
+                console.log(newURL)
+
+                params = getHashParams()
+                access_token = params.access_token
+                refresh_token = params.refresh_token
+                error = params.error
+
+                setTokens({
+                    accessToken: access_token,
+                    refreshToken: refresh_token
+                })
+            })
+    }
+
+    function getHashParams() {
+        var hashParams = {};
+        var e, r = /([^&;=]+)=?([^&;]*)/g,
+            q = window.location.hash.substring(21);
+        while (e = r.exec(q)) {
+            hashParams[e[1]] = decodeURIComponent(e[2]);
+        }
+        return hashParams;
+    }
+
     const parentToChild = () => {
-        setAccessToken(access_token)
+        setTokens({
+            accessToken: access_token,
+            refreshToken: refresh_token
+        })
     }
 
     return (
         <div>
             Playing: {currentSong.title} by {currentSong.artists}
-            <Button onClick={updateInfo} btnName="Click to Update"/>
+            <Button onClick={updateInfo} btnName="Click to Update" />
             <ControlBar />
         </div>
     )
