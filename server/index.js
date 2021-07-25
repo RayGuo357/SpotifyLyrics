@@ -27,18 +27,18 @@ var generateRandomString = function (length) {
 function artistCompiler(artists) {
   var artist_list = '';
   if (artists.length === 1) {
-      artist_list = artists[0].name;
-      return artist_list;
+    artist_list = artists[0].name;
+    return artist_list;
   } else {
-      for (var a of artists) {
-          if (artist_list === '') {
-              artist_list = a.name;
-          } else {
-              artist_list = artist_list + ', ' + a.name;
-          }
+    for (var a of artists) {
+      if (artist_list === '') {
+        artist_list = a.name;
+      } else {
+        artist_list = artist_list + ', ' + a.name;
       }
+    }
 
-      return artist_list;
+    return artist_list;
   }
 }
 
@@ -152,78 +152,118 @@ app.get('/callback', function (req, res) {
 //   console.log("in currently playing")
 // })
 
-app.get('/update', function(req, res) {
+app.get('/update', function (req, res) {
 
   var currentlyPlaying = {
-      url: 'https://api.spotify.com/v1/me/player/currently-playing',
-      headers: { 'Authorization' : 'Bearer ' + req.query.access_token },
-      json: true
+    url: 'https://api.spotify.com/v1/me/player/currently-playing',
+    headers: { 'Authorization': 'Bearer ' + req.query.access_token },
+    json: true
   };
 
-  request.get(currentlyPlaying, function(error, response, body) {
+  request.get(currentlyPlaying, function (error, response, body) {
     // console.log("Requesting")
-      if (!error && response.statusCode === 200) {
-        // console.log("inside")
-        // console.log(body)
-              var title = body.item.name;
-              artists = artistCompiler(body.item.artists),
-              album_cover = body.item.album.images[0].url,
-              duration = body.item.duration_ms,
-              href = body.item.href,
-              progress = body.progress_ms,
-              is_playing = body.is_playing;
-              // multiple_artists = body.item.artists.length > 1,
-              // main_artist = body.item.artists[0].name;
-          // console.log(body);
+    if (!error && response.statusCode === 200) {
+      // console.log("inside")
+      // console.log(body)
+      var title = body.item.name;
+      artists = artistCompiler(body.item.artists),
+        album_cover = body.item.album.images[0].url,
+        duration = body.item.duration_ms,
+        href = body.item.href,
+        progress = body.progress_ms,
+        is_playing = body.is_playing;
+      // multiple_artists = body.item.artists.length > 1,
+      // main_artist = body.item.artists[0].name;
+      // console.log(body);
 
-          var seek_value = (body.progress_ms / body.item.duration_ms * 100).toFixed(2) * 100;
+      var seek_value = (body.progress_ms / body.item.duration_ms * 100).toFixed(2) * 100;
 
-          res.json({
-              // message: "Hello from server!"
-              title: title,
-              artists: artists,
-              // album_cover: album_cover,
-              duration: duration,
-              song_href: href,
-              progress: progress,
-              // 'seek_value': seek_value,
-              is_playing: is_playing,
-              // 'multiple_artists': multiple_artists,
-              // 'main_artist': main_artist
-          });
-      } else {
-        console.log(error)
-        console.log(response.statusCode)
-      }
+      res.json({
+        // message: "Hello from server!"
+        title: title,
+        artists: artists,
+        // album_cover: album_cover,
+        duration: duration,
+        song_href: href,
+        progress: progress,
+        // 'seek_value': seek_value,
+        is_playing: is_playing,
+        // 'multiple_artists': multiple_artists,
+        // 'main_artist': main_artist
+      });
+    } else {
+      console.log(error)
+      console.log(response.statusCode)
+    }
   });
 });
 
-app.get('/refresh_token', function(req, res) {
+app.get('/refresh_token', function (req, res) {
   console.log("refreshing token")
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
   var authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-      form: {
-          grant_type: 'refresh_token',
-          refresh_token: refresh_token
-      },
-      json: true
+    url: 'https://accounts.spotify.com/api/token',
+    headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+    form: {
+      grant_type: 'refresh_token',
+      refresh_token: refresh_token
+    },
+    json: true
   };
 
-  request.post(authOptions, function(error, response, body) {
-      if (!error && response.statusCode === 200) {
-          var access_token = body.access_token;
-          res.send({
-              'access_token': access_token
-          });
-      } else {
-        console.log('request failed')
-        console.log(error)
-        console.log(response.statusCode)
-      }
+  request.post(authOptions, function (error, response, body) {
+    if (!error && response.statusCode === 200) {
+      var access_token = body.access_token;
+      res.send({
+        'access_token': access_token
+      });
+    } else {
+      console.log('request failed')
+      console.log(error)
+      console.log(response.statusCode)
+    }
   });
+});
+
+app.get('/pause', function (req, res) {
+  var pause = {
+    url: 'https://api.spotify.com/v1/me/player/pause',
+    headers: { 'Authorization': 'Bearer ' + req.query.access_token },
+  };
+
+  request.put(pause, function (error, response, body) {
+    if (!error && response.statusCode === 204) {
+      res.send({
+        'status': 'success?'
+      });
+    } else {
+      console.log('request failed')
+      console.log(error)
+      console.log(response.statusCode)
+    }
+  });
+
+});
+
+app.get('/play', function (req, res) {
+  var pause = {
+    url: 'https://api.spotify.com/v1/me/player/play',
+    headers: { 'Authorization': 'Bearer ' + req.query.access_token },
+  };
+
+  request.put(pause, function (error, response, body) {
+    if (!error && response.statusCode === 204) {
+      res.send({
+        'status': 'success?'
+      });
+    } else {
+      console.log('request failed')
+      console.log(error)
+      console.log(response.statusCode)
+    }
+  });
+
 });
 
 app.get("/test", (req, res) => {
