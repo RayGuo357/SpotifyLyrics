@@ -31,7 +31,7 @@ const CurrentlyPlaying = () => {
         // var test = getHashParams().access_token
         // console.log(test)
         updateTokens()
-        var url = new URL(window.location.protocol + window.location.hostname + "update"),
+        var url = new URL(window.location.protocol + window.location.hostname + "/update"),
             params = { access_token: tokens.accessToken }
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         fetch(url)
@@ -50,7 +50,7 @@ const CurrentlyPlaying = () => {
 
     const updateTokens = () => {
         // console.log("updating tokens")
-        var url = new URL(window.location.protocol + window.location.hostname + "refresh_token"),
+        var url = new URL(window.location.protocol + window.location.hostname + "/refresh_token"),
             params = { refresh_token: refresh_token }
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         fetch(url)

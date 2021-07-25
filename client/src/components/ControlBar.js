@@ -7,7 +7,7 @@ const ControlBar = ({ accessToken, refreshTokens, updateInfo, isPlaying }) => {
 
     const playPauseBtn = (e) => {
         if (isPlaying) {
-            url = new URL(window.location.protocol + window.location.hostname + "pause")
+            url = new URL(window.location.protocol + window.location.hostname + "/pause")
             params = { access_token: accessToken }
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
             fetch(url)
@@ -17,7 +17,7 @@ const ControlBar = ({ accessToken, refreshTokens, updateInfo, isPlaying }) => {
                 .then(console.log(isPlaying))
                 .then(updateInfo())
         } else {
-            url = new URL(window.location.protocol + window.location.hostname + "play")
+            url = new URL(window.location.protocol + window.location.hostname + "/play")
             params = { access_token: accessToken }
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
             fetch(url)
