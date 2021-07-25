@@ -60,7 +60,7 @@ const CurrentlyPlaying = () => {
                 var newURL = window.location.protocol 
                         + "//" 
                         + window.location.hostname 
-                        + ":3000/#/currently-playing/#access_token=" 
+                        + "/#/currently-playing/#access_token=" 
                         + access_token 
                         + "&refresh_token=" 
                         + refresh_token
