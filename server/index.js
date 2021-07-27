@@ -235,12 +235,15 @@ app.get('/pause', function (req, res) {
   request.put(pause, function (error, response, body) {
     if (!error && response.statusCode === 204) {
       res.send({
-        'status': 'success?'
+        'status_code': response.statusCode
       });
     } else {
       console.log('request failed')
       console.log(error)
       console.log(response.statusCode)
+      res.send({
+        'status_code': response.statusCode
+      });
     }
   });
 
@@ -255,12 +258,15 @@ app.get('/play', function (req, res) {
   request.put(pause, function (error, response, body) {
     if (!error && response.statusCode === 204) {
       res.send({
-        'status': 'success?'
+        'status_code': response.statusCode
       });
     } else {
       console.log('request failed')
       console.log(error)
       console.log(response.statusCode)
+      res.send({
+        'status_code': response.statusCode
+      });
     }
   });
 
