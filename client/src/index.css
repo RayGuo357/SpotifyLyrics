@@ -20,3 +20,15 @@ code {
   color: blue;
   background: black;
 } */
+
+.CurrentlyPlaying {
+  width: 100%;
+  height: 100%
+}
+
+.ControlBar {
+  bottom: 0px;
+  width: 100%;
+  height: 50%;
+  flex-direction: "row";
+}

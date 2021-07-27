@@ -23,7 +23,7 @@ function App() {
             <header className="App-header">
               <img src={logo} className="App-logo" alt="logo" />
               <p>{!data ? "Loading..." : data}</p>
-              <CurrentlyPlaying />
+              <CurrentlyPlaying className="CurrentlyPlaying"/>
             </header>
           </div>
         </>

@@ -179,6 +179,7 @@ app.get('/update', function (req, res) {
       var seek_value = (body.progress_ms / body.item.duration_ms * 100).toFixed(2) * 100;
 
       res.json({
+        'status_code': response.statusCode,
         // message: "Hello from server!"
         title: title,
         artists: artists,
@@ -192,8 +193,9 @@ app.get('/update', function (req, res) {
         // 'main_artist': main_artist
       });
     } else {
-      console.log(error)
-      console.log(response.statusCode)
+      res.send({
+        'status_code': response.statusCode
+      });
     }
   });
 });
@@ -216,12 +218,13 @@ app.get('/refresh_token', function (req, res) {
     if (!error && response.statusCode === 200) {
       var access_token = body.access_token;
       res.send({
+        'status_code': response.statusCode,
         'access_token': access_token
       });
     } else {
-      console.log('request failed')
-      console.log(error)
-      console.log(response.statusCode)
+      res.send({
+        'status_code': response.statusCode
+      });
     }
   });
 });
@@ -261,15 +264,49 @@ app.get('/play', function (req, res) {
         'status_code': response.statusCode
       });
     } else {
-      console.log('request failed')
-      console.log(error)
-      console.log(response.statusCode)
       res.send({
         'status_code': response.statusCode
       });
     }
   });
+});
 
+app.get('/next', function (req, res) {
+  var next = {
+    url: 'https://api.spotify.com/v1/me/player/next',
+    headers: { 'Authorization': 'Bearer ' + req.query.access_token },
+  };
+
+  request.post(next, function (error, response, body) {
+    if (!error && response.statusCode === 204) {
+      res.send({
+        'status_code': response.statusCode
+      });
+    } else {
+      res.send({
+        'status_code': response.statusCode
+      });
+    }
+  });
+});
+
+app.get('/previous', function (req, res) {
+  var previous = {
+    url: 'https://api.spotify.com/v1/me/player/previous',
+    headers: { 'Authorization': 'Bearer ' + req.query.access_token },
+  };
+
+  request.post(previous, function (error, response, body) {
+    if (!error && response.statusCode === 204) {
+      res.send({
+        'status_code': response.statusCode
+      });
+    } else {
+      res.send({
+        'status_code': response.statusCode
+      });
+    }
+  });
 });
 
 app.get("/test", (req, res) => {
