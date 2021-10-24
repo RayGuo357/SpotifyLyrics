@@ -304,13 +304,15 @@ app.get("/lyrics", (req, res) => {
     encoding: 'utf-8'
   });
   
-  let output = ls.stdout;
-  console.log(output)
-  output = output.split("Done.")
-
-  res.send({
-    'lyrics': output[2]
-  })
+  setTimeout(() => {
+    let output = ls.stdout;
+    console.log(`Output is: ${output}`)
+    output = output.split("Done.")
+  
+    res.send({
+      'lyrics': output[2]
+    })
+  }, 2000)
 });
 
 app.get("/test", (req, res) => {
