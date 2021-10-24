@@ -9,7 +9,7 @@ b = sys.argv[2]
 # a = 'VERY ALONE'
 # b = 'Zaia'
 
-print("test")
+# print("test")
 
 load_dotenv()
 
