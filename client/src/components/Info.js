@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Info = () => {
+const Info = ( {title, artists} ) => {
     return (
-        <div>
-            
+        <div className="Title">
+            {title} by {artists}
         </div>
     )
 }

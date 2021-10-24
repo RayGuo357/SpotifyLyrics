@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Button = ({ btnName, onClick }) => {
+const Button = ({ btnName, onClick, icon }) => {
     return (
-        <div>
+        <div className="btnContainer">
             <button className="btn" onClick={onClick}>
-                {btnName}
+            <img src={icon} alt={btnName} />
             </button>
         </div>
     )

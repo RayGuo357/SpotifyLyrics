@@ -1,6 +1,6 @@
 const Login = () => {
     return (
-        <a href={"./login"}>
+        <a className="LoginButton" href={"./login"}>
             Login
         </a>
     )

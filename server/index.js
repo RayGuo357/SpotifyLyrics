@@ -86,7 +86,6 @@ app.get("/login", (req, res) => {
 });
 
 app.get('/callback', function (req, res) {
-  console.log("Got into callback")
 
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -148,10 +147,6 @@ app.get('/callback', function (req, res) {
   }
 });
 
-// app.get('/currently-playing', (req, res) => {
-//   console.log("in currently playing")
-// })
-
 app.get('/update', function (req, res) {
 
   var currentlyPlaying = {
@@ -161,36 +156,28 @@ app.get('/update', function (req, res) {
   };
 
   request.get(currentlyPlaying, function (error, response, body) {
-    // console.log("Requesting")
     if (!error && response.statusCode === 200) {
-      // console.log("inside")
-      // console.log(body)
       var title = body.item.name;
       artists = artistCompiler(body.item.artists),
-        album_cover = body.item.album.images[0].url,
-        duration = body.item.duration_ms,
-        href = body.item.href,
-        progress = body.progress_ms,
-        is_playing = body.is_playing;
-      // multiple_artists = body.item.artists.length > 1,
-      // main_artist = body.item.artists[0].name;
-      // console.log(body);
+      album_cover = body.item.album.images[0].url,
+      href = body.item.href,
+      duration = body.item.duration_ms,
+      is_playing = body.is_playing;
+      progress = body.progress_ms,
+      main_artist = body.item.artists[0].name;
 
       var seek_value = (body.progress_ms / body.item.duration_ms * 100).toFixed(2) * 100;
 
       res.json({
         'status_code': response.statusCode,
-        // message: "Hello from server!"
         title: title,
         artists: artists,
         // album_cover: album_cover,
         duration: duration,
         song_href: href,
         progress: progress,
-        // 'seek_value': seek_value,
         is_playing: is_playing,
-        // 'multiple_artists': multiple_artists,
-        // 'main_artist': main_artist
+        main_artist: main_artist
       });
     } else {
       res.send({
@@ -201,7 +188,6 @@ app.get('/update', function (req, res) {
 });
 
 app.get('/refresh_token', function (req, res) {
-  console.log("refreshing token")
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
   var authOptions = {
@@ -307,6 +293,23 @@ app.get('/previous', function (req, res) {
       });
     }
   });
+});
+
+app.get("/lyrics", (req, res) => {
+  const spawn = require("child_process").spawnSync;
+  const ls = spawn('python', ["./server/lyrics.py", req.query.title, req.query.artist], {
+    cwd: process.cwd(),
+    env: process.env,
+    stdio: 'pipe',
+    encoding: 'utf-8'
+  });
+  
+  let output = ls.stdout;
+  output = output.split("Done.")
+
+  res.send({
+    'lyrics': output[2]
+  })
 });
 
 app.get("/test", (req, res) => {
