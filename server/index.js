@@ -1,3 +1,5 @@
+const genius = require('genius-lyrics-api');
+
 const path = require('path');
 const express = require('express');
 const request = require('request');
@@ -296,23 +298,18 @@ app.get('/previous', function (req, res) {
 });
 
 app.get("/lyrics", (req, res) => {
-  const spawn = require("child_process").spawnSync;
-  const ls = spawn('python', ["./server/lyrics.py", req.query.title, req.query.artist], {
-    cwd: process.cwd(),
-    env: process.env,
-    stdio: 'pipe',
-    encoding: 'utf-8'
-  });
-  
-  setTimeout(() => {
-    let output = ls.stdout;
-    console.log(`Output is: ${output}`)
-    output = output.split("Done.")
-  
+  const options = {
+    apiKey: process.env.GENIUS_SECRET,
+    title: req.query.title,
+    artist: req.query.artist,
+    optimizeQuery: true
+  }
+
+  genius.getLyrics(options).then((lyrics) => {
     res.send({
-      'lyrics': output[2]
+      'lyrics': lyrics
     })
-  }, 2000)
+  })
 });
 
 app.get("/test", (req, res) => {
