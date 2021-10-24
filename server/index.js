@@ -305,6 +305,7 @@ app.get("/lyrics", (req, res) => {
   });
   
   let output = ls.stdout;
+  console.log(stdout)
   output = output.split("Done.")
 
   res.send({

@@ -9,6 +9,8 @@ b = sys.argv[2]
 # a = 'VERY ALONE'
 # b = 'Zaia'
 
+print("test")
+
 load_dotenv()
 
 # Genius Client Token Here
